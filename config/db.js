@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const conectarDB = async () => {
     try {
+
+        //La siguiente linea se agrega por recomendación de la liberia de mongoose:
         mongoose.set('strictQuery', false);
+
         const connection = await mongoose.connect(
             "mongodb+srv://nicolasC4:DNg9lDP10LHcRBsW@repaso.hce4hnq.mongodb.net/?retryWrites=true&w=majority",{
                 useNewUrlParser: true,
