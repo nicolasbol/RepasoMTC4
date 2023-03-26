@@ -39,10 +39,7 @@ const Login = () => {
                         >Crear cuenta
                     </Link>
                     
-                </form> 
-
-                                
-                
+                </form>                                         
             </div>
         </main>
 

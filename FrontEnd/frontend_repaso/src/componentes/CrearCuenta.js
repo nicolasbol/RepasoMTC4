@@ -1,7 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const CrearCuenta = () => {
+
+    const [usuario, setUsuario] = useState({
+        nombre:'',
+        email:'',
+        password:'',
+        confirmar:''
+    })
+
+    //Esta función guarda cualquier cambio dentro de los inputs
+    //automáticamente, en tiempo real.
+    const onChange = (e) =>{
+        setUsuario({
+            ...usuario,
+            [e.target.name]: e.target.value,
+        })
+        // console.log(e.target.name+" = "+ e.target.value)
+    }
+    
+    const { nombre, email, password, confirmar } = usuario;
+
+    
+    const crearCuenta = async () =>{
+        if (password !== confirmar) {
+            console.log("Las contraseñas son diferentes");
+            const mensaje = "Las contraseñas son diferentes";  
+            // swal('Error', 'Las contraseñas son diferentes', 'error');
+            swal({
+                title: 'Error',
+                text: mensaje,
+                icon: 'error',
+                buttons:{
+                    confirm:{
+                        text:'OK',
+                        value: true,
+                        visible: true,
+                        className: 'btn btn-danger',
+                        closeModal: true
+                    }
+                }
+            })
+
+        } else {
+
+            const data = {
+                nombre: usuario.nombre,
+                email: usuario.email,
+                password: usuario.password
+            }
+            console.log(data);
+
+        }
+    }
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        crearCuenta();
+    }
+
     return(
 
         <main className='container mx-auto mt-5 md:mt-20 p-5 md:flex md:justify-center'>
@@ -10,35 +69,54 @@ const CrearCuenta = () => {
                                 bg-clip-text font-display text-5xl tracking-tight text-transparent '>
                     Creación de Cuenta
                 </h1>
-
-                <form className='my-10 bg-white rounded-lg p-5'>
+ 
+                <form 
+                    onSubmit={onSubmit}
+                    className='my-10 bg-white rounded-lg p-5'
+                >
                     <div className='my-5'>
                         <label className='uppercase text-gray-600 block text-xl font-bold'>Nombre</label>
                         <input 
                             type="nombre"
+                            id="nombre"
+                            name="nombre"
                             placeholder='Nombre'            
                             className='w-full my-3 p-3 border rounded-lg bg-gray-100'                  
+                            value={nombre}
+                            onChange={onChange}
                         />  
 
                         <label className='uppercase text-gray-600 block text-xl font-bold'>Email</label>
                         <input 
                             type="email"
+                            id="email"
+                            name="email"
                             placeholder='Email'            
                             className='w-full my-3 p-3 border rounded-lg bg-gray-100'                  
+                            value={email}
+                            onChange={onChange}
                         />    
 
                         <label className='uppercase text-gray-600 block text-xl font-bold'>password</label>
                         <input 
                             type="password"
+                            id="password"
+                            name="password"
                             placeholder='Contraseña'            
                             className='w-full my-3 p-3 border rounded-lg bg-gray-100'                  
+                            value={password}
+                            onChange={onChange}
                         />
 
                         <label className='uppercase text-gray-600 block text-xl font-bold'>confirmar password</label>
                         <input 
                             type="password"
+                            id="confirmar"
+                            name="confirmar"
                             placeholder='Confirme su contraseña'            
                             className='w-full mt-3 p-3 border rounded-lg bg-gray-100'                  
+                            value={confirmar}
+                            onChange={onChange}
                         />
 
                     </div>
