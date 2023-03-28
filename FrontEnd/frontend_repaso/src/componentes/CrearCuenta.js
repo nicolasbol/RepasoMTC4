@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import crud from '../conexiones/crud';
 
 const CrearCuenta = () => {
+    const navigate = useNavigate();
 
     const [usuario, setUsuario] = useState({
         nombre:'',
@@ -42,7 +44,7 @@ const CrearCuenta = () => {
                         closeModal: true
                     }
                 }
-            })
+            });
 
         } else {
 
@@ -53,6 +55,55 @@ const CrearCuenta = () => {
             }
             console.log(data);
 
+            const response = await crud.POST(`/api/usuarios`, data);
+            const mensaje = response.msg;
+            // console.log(mensaje)
+
+            if (mensaje === "El usuario ya está registrado") {
+                const mensaje = "El usuario ya está registrado";  
+                // swal('Error', 'El usuario ya está registrado', 'error');
+                swal({
+                    title: 'Error',
+                    text: mensaje,
+                    icon: 'error',
+                    buttons:{
+                        confirm:{
+                            text:'OK',
+                            value: true,
+                            visible: true,
+                            className: 'btn btn-danger',
+                            closeModal: true
+                        }
+                    }
+                });
+            } else {
+                const mensaje = "Usuario creado correctamente";  
+                // swal('Información', 'Usuario creado correctamente', 'success');
+                swal({
+                    title: 'Información',
+                    text: mensaje,
+                    icon: 'success',
+                    buttons:{
+                        confirm:{
+                            text:'OK',
+                            value: true,
+                            visible: true,
+                            className: 'btn btn-primary',
+                            closeModal: true
+                        }
+                    }
+                });
+
+                setUsuario({
+                    nombre: '',
+                    email:'',
+                    password:'',
+                    confirmar:''
+                })
+
+                //Redirecciona a la pantalla de Login
+                navigate("/");
+            }
         }
     }
 
