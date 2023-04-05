@@ -102,7 +102,7 @@ const CrearCuenta = () => {
                 })
 
                 //Redirecciona a la pantalla de Login
-                navigate("/");
+                navigate("/login");
             }
         }
     }
