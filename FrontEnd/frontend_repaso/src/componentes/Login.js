@@ -40,9 +40,7 @@ const Login = () => {
         } else {
             
             const jwt = response.token;
-
             localStorage.setItem('token', jwt);
-            
             
             console.log("Inicio de sesión exitoso")
             //Redirecciona a la pantalla de Admin
