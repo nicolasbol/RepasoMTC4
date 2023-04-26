@@ -1,40 +1,77 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import crud from '../conexiones/crud';
 
 const Admin = () => {
-    
+
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const autenticarUsuario = async () => {
-            const token = localStorage.getItem("token");
-            // console.log(token);
+            const token = localStorage.getItem("token")
+            //console.log(token)
             if (!token) {
-                navigate("/login");                
-            };
+                navigate("/login");
+            }
         }
-        autenticarUsuario();
-    },[navigate]);// [] hace que solo se ejecute una vez (al inicio) el useEffect, es decir cuando se llame y antes de que se renderize el componente de "Admin"
- 
-    return(
+        autenticarUsuario()
+    }, [navigate]);// [] hacen que solo se ejecute una vez el useEffect
+
+    const [categoria, setCategorias] = useState([]);
+
+    const cargarCategoria = async () => {
+        const response = await crud.GET(`/api/categoria`);
+        console.log(response);
+        setCategorias(response.categoria);
+    }
+
+    useEffect(() => {
+        cargarCategoria();
+    }, [])// [] hace que solo se ejecute una vez (al inicio) el useEffect, es decir cuando se llame y antes de que se renderize el componente de "Admin"
+    return (
         <>
-            <Header/>
-            
+            <Header />
             <div className='md:flex md:min-h-screen'>
-                <Sidebar/>
+                <Sidebar />
                 <main className='flex-1'>
-                    <div className='mt-10 flex justify-center'>
-                        <h1 className='inline text-center bg-gradient-to-r from-indigo-200 via-violet-700 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent '>
-                            Listado de Categorias
-                        </h1>
-                    </div>
+                    <h1 className="inline bg-gradient-to-r from-indigo-200 via-violet-700 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+                        Listado de categorias
+                    </h1>
+                    <table className="table table-bordered">
+                        <thead className='bg-white'>
+                            <tr>
+                                <th style={{ width: '10%' }}>Id</th>
+                                <th style={{ width: '75%' }}>Nombre</th>
+                                <th style={{ width: '15%' }}>Opciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody className="bg-white">
+                            {
+                                categoria.map(
+                                    item =>
+                                        <tr key={item._id}>
+                                            <td>{item._id}</td>
+                                            <td >{item.nombre}</td>
+                                            {/* <td>
+                                            </td> */}
+                                            <td>
+                                                <Link>crear producto</Link>&nbsp;&nbsp;
+                                                <Link>Editar</Link>&nbsp;&nbsp;
+                                                <button  >Eliminar</button>
+                                            </td>
+                                        </tr>
+                                )
+                            }
+                        </tbody>
+
+                        <tbody>
+                        </tbody>
+                    </table>
                 </main>
             </div>
-
-
-
         </>
 
 

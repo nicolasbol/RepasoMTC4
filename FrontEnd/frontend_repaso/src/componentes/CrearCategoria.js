@@ -1,9 +1,13 @@
 import React, { useState }  from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import crud from '../conexiones/crud';
+import swal from 'sweetalert';
 
 const CrearCategoria = () => {
+
+    const navigate = useNavigate();
 
     const [categoria, setCategoria] = useState({
         nombre:''
@@ -25,6 +29,13 @@ const CrearCategoria = () => {
         console.log(data);
         const response = await crud.POST(`/api/categoria`, data);
         console.log(response);
+
+        if (response.msg === "Ha habido un error") {
+            swal('Error', response.msg, 'error');
+        } else {
+            swal('Información', 'Categoria creada correctamente', 'success');
+        }
+        navigate("/Admin");
     }
 
     const onSubmit = (e) => {
