@@ -4,12 +4,13 @@ import Header from '../Header';
 import Sidebar from '../Sidebar';
 import crud from '../../conexiones/crud';
 import swal from 'sweetalert';
+import { ViewProductos } from './ViewProductos';
 
 const HomeProductos = () => {
 
     const navigate = useNavigate();
 
-    const {idCategoria} = useParams();
+    const { idCategoria } = useParams();
 
     useEffect(() => {
         const autenticarUsuario = async () => {
@@ -22,18 +23,18 @@ const HomeProductos = () => {
         autenticarUsuario()
     }, [navigate]);// [] hacen que solo se ejecute una vez el useEffect
 
-    const [producto, setProductos] = useState([]);
+    const [productos, setProductos] = useState([]);
 
-    const cargarProducto = async () => {
+    const cargarProductos = async () => {
         const response = await crud.GET(`/api/producto/${idCategoria}`);
         console.log(response);
-        // setProducto(response);
+        setProductos(response);
     }
 
     useEffect(() => {
-        cargarProducto();
+        cargarProductos();
     }, [])
-    
+
     const borrarProducto = async (idProducto) => {
         const response = await crud.DELETE(`/api/producto/${idProducto}`);
         if (response.msg === "Producto eliminado") {
@@ -43,11 +44,11 @@ const HomeProductos = () => {
         }
         console.log(response);
         console.log(idProducto);
-        cargarProducto();
+        cargarProductos();
     }
 
     return (
-        
+
         <>
             <Header />
             <div className='md:flex md:min-h-screen'>
@@ -59,13 +60,24 @@ const HomeProductos = () => {
                         </h1>
                     </div>
 
-                    <div className='p-10'> 
-                        <Link 
+                    <div className='p-10'>
+                        <Link
                             className='bg-violet-600 w-full p-3 text-white uppercase font-bold mt-5 text-center rounded-lg'
-                            to = {`/crear-producto/${idCategoria}`}
+                            to={`/crear-producto/${idCategoria}`}
                         >Crear Producto</Link>
                     </div>
-                    
+
+                    <div className='bg-gray-600 shadow mt-10 rounded-lg'>
+                        {
+                            productos.map( producto => 
+                                <ViewProductos
+                                    key={producto._id}
+                                    producto={producto}
+                                />
+                            )
+                        }
+                    </div>
+
                 </main>
             </div>
         </>
