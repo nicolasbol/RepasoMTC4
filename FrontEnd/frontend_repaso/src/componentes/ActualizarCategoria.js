@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import crud from '../conexiones/crud';
 import swal from 'sweetalert';
 
-const CrearCategoria = () => {
+const ActualizarCategoria = () => {
+
+    const { idCategoria } = useParams();
 
     const navigate = useNavigate();
 
@@ -20,31 +22,42 @@ const CrearCategoria = () => {
             [e.target.name]: e.target.value,
         })
     }
-
+    
+    const cargarCategoria = async () => {
+        const response = await crud.GET(`/api/categoria/${idCategoria}`);
+        console.log(response);
+        setCategoria(response.categoria);
+    }
+    
     const { nombre, imagen } = categoria;
-
-    const crearCategoria = async () => {
+    
+    useEffect(() => {
+        cargarCategoria();
+    }, [])
+    
+    const actualizarCategoria = async () => {
         const data = {
             nombre: categoria.nombre,
             imagen: categoria.imagen,
         }
         console.log(data);
-        const response = await crud.POST(`/api/categoria`, data);
+        const response = await crud.PUT(`/api/categoria/${idCategoria}`, data);
         console.log(response);
-
-        if (response.msg === "Ha habido un error") {
+        
+        if (response.msg) {
             swal('Error', response.msg, 'error');
         } else {
-            swal('Información', 'Categoria creada correctamente', 'success');
+            swal('Información', 'Categoria actualizada correctamente', 'success');
         }
         navigate("/admin");
     }
 
     const onSubmit = (e) => {
         e.preventDefault();
-        crearCategoria();
+        actualizarCategoria();
     }
 
+    
     return (
         <>
             <Header />
@@ -54,7 +67,7 @@ const CrearCategoria = () => {
                 <main className='flex-1'>
                     <div className='mt-10 flex justify-center'>
                         <h1 className='inline text-center bg-gradient-to-r from-indigo-200 via-violet-700 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent'>
-                            Crear Categorias
+                            Actualizar Categorias
                         </h1>
                     </div>
 
@@ -89,7 +102,7 @@ const CrearCategoria = () => {
 
                             <input
                                 type="submit"
-                                value="Crear Categoria"
+                                value="Actualizar Categoria"
                                 className="bg-violet-600 mb-5 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer hover:bg-violet-400 transition-colors"
                             />
 
@@ -100,4 +113,4 @@ const CrearCategoria = () => {
         </>
     );
 }
-export default CrearCategoria;
+export default ActualizarCategoria;

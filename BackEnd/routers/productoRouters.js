@@ -5,7 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 
 
-router.get("/", authMiddleware, leerProducto);
+router.get("/:id", authMiddleware, leerProducto);
 
 router.post("/", authMiddleware, crearProducto);
 

@@ -60,7 +60,6 @@ const CrearCuenta = () => {
             // console.log(mensaje)
 
             if (mensaje === "El usuario ya está registrado") {
-                const mensaje = "El usuario ya está registrado";  
                 // swal('Error', 'El usuario ya está registrado', 'error');
                 swal({
                     title: 'Error',

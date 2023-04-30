@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import crud from '../conexiones/crud';
+import swal from 'sweetalert';
 
 const Admin = () => {
 
@@ -23,13 +24,53 @@ const Admin = () => {
 
     const cargarCategoria = async () => {
         const response = await crud.GET(`/api/categoria`);
-        console.log(response);
+        // console.log(response);
         setCategorias(response.categoria);
     }
 
     useEffect(() => {
         cargarCategoria();
     }, [])// [] hace que solo se ejecute una vez (al inicio) el useEffect, es decir cuando se llame y antes de que se renderize el componente de "Admin"
+
+    const borrarCategoria = async (idCategoria) => {
+        
+        // //Al parecer al utilizar el 'await', puedo recibir de forma correcta el response.msg
+        // const response =  await crud.DELETE(`/api/categoria/${idCategoria}`);
+        // console.log(response);
+        // if (response.msg === "Categoria eliminada") {
+        //     swal('Información', response.msg, 'success');
+        // } else {
+        //     swal('Error', "Ha habido un error", 'error');
+        // }
+        
+        //Pero si no uso el 'await' como en este caso, puesto que tengo un 'if', no es posible recibir bien el mensage desde response.msg
+        //Otra solución es incluir un 'async' antes del primer 'willDelete' e incluir el 'await' al hacer la petición 'DELETE'.
+        swal({
+            title: "¿Estas seguro de eliminar esta categoría?",
+            text: "Esta acción no se puede revertir",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                const response =  await crud.DELETE(`/api/categoria/${idCategoria}`);
+                if(response){
+                    swal(response.msg, {
+                        icon: "success",
+                    });
+
+                    console.log(response);
+                }
+                else {
+                    swal('Error', "Ha habido un error", 'error');
+                  }
+            } 
+            cargarCategoria();
+        });       
+       
+    }
+
     return (
         <>
             <Header />
@@ -42,7 +83,8 @@ const Admin = () => {
                     <table className="table table-bordered">
                         <thead className='bg-white'>
                             <tr>
-                                <th style={{ width: '10%' }}>Id</th>
+                                <th style={{ width: '10%' }}>Imagen</th>
+                                {/* <th style={{ width: '10%' }}>Id</th> */}
                                 <th style={{ width: '75%' }}>Nombre</th>
                                 <th style={{ width: '15%' }}>Opciones</th>
                             </tr>
@@ -53,14 +95,21 @@ const Admin = () => {
                                 categoria.map(
                                     item =>
                                         <tr key={item._id}>
-                                            <td>{item._id}</td>
-                                            <td >{item.nombre}</td>
-                                            {/* <td>
-                                            </td> */}
                                             <td>
-                                                <Link>crear producto</Link>&nbsp;&nbsp;
-                                                <Link>Editar</Link>&nbsp;&nbsp;
-                                                <button  >Eliminar</button>
+                                                <img src={item.imagen}></img>
+                                            </td>
+                                            {/* <td>{item._id}</td> */}
+                                            <td >{item.nombre}</td>
+                                            <td>
+                                                <Link
+                                                    to = {`/home-productos/${item._id}`}
+                                                >crear producto</Link>&nbsp;&nbsp;
+                                                <Link
+                                                     to = {`/actualizar-categoria/${item._id}`}
+                                                >Editar</Link>&nbsp;&nbsp;
+                                                <button
+                                                    onClick={() => borrarCategoria(item._id)}
+                                                >Eliminar</button>
                                             </td>
                                         </tr>
                                 )
