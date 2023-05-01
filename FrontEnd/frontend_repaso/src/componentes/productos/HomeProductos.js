@@ -69,7 +69,7 @@ const HomeProductos = () => {
 
                     <div className='bg-gray-600 shadow mt-10 rounded-lg'>
                         {
-                            productos.map( producto => 
+                            productos.map( producto =>
                                 <ViewProductos
                                     key={producto._id}
                                     producto={producto}
