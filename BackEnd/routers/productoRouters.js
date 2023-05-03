@@ -1,9 +1,11 @@
 const express = require("express");
-const { leerProducto, crearProducto, actualizarProducto, borrarProducto } = require("../controllers/productoController");
+const { leerProducto, crearProducto, actualizarProducto, borrarProducto, leerProductoHome } = require("../controllers/productoController");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 
 
+
+router.get("/home", leerProductoHome);
 
 router.get("/:id", authMiddleware, leerProducto);
 

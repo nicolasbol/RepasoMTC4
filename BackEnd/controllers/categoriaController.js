@@ -1,5 +1,15 @@
 const Categoria = require("../models/categoria");
 
+exports.leerCategoriaHome = async ( req, res ) => {
+    // res.json({ msg: "Se ejecutó leerCategoria"});
+    try {
+        const categoria = await Categoria.find();
+        res.json({ categoria });  
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 exports.leerCategoria = async ( req, res ) => {
     // res.json({ msg: "Se ejecutó leerCategoria"});
 

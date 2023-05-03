@@ -1,5 +1,15 @@
 const Producto = require("../models/producto");
 
+exports.leerProductoHome = async ( req, res ) => {
+    // res.json({ msg: "Se ejecutó leerProducto"});
+    try {
+        const producto =  await Producto.find();
+        res.json({producto});
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 exports.leerProducto = async ( req, res ) => {
     // res.json({ msg: "Se ejecutó leerProducto"});
     const { id } = req.params;
